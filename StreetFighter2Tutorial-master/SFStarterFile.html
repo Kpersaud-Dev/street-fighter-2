@@ -1,0 +1,131 @@
+<html>
+<head>
+	<style>
+	*{padding: 0; margin:0;}
+	canvas{ background: #aaa; display: block; margin: 0 auto;}
+	</style>
+</head>
+
+<body>
+<canvas id= "myCanvas" width="392" height="248"></canvas>
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+var ground = new Image();
+ground.src = "ground.png";
+let water = new Image();
+water.src = "water.png";
+var distanceFromCenter = 0;
+var ship = new Image();
+ship.src = "ship.png";
+let coatGuyImg = new Image();
+let coatGuy = ["coat-guy-2.png", "coat-guy-3.png", "coat-guy-2.png", "coat-guy-1.png", "coat-guy-2.png", "coat-guy-3.png", "coat-guy-2.png", "coat-guy-1.png", "coat-guy-2.png"];
+let coolGuyImg = new Image();
+let coolGuy = ["cool-guy-1.png", "cool-guy-2.png", "cool-guy-3.png", "cool-guy-2.png", "cool-guy-1.png", "cool-guy-2.png", "cool-guy-3.png", "cool-guy-2.png", "cool-guy-1.png"];
+let flagImg = new Image();
+let flag = ["flag-1.png", "flag-2.png", "flag-3.png", "flag-2.png", "flag-1.png", "flag-2.png", "flag-3.png", "flag-2.png", "flag-1.png"];
+let menImg = new Image();
+let men = ["men-1.png", "men-2.png", "men-3.png", "men-2.png", "men-1.png", "men-2.png", "men-3.png"];
+let purpleGuyImg = new Image();
+let purpleGuy = ["purple-guy-1.png", "purple-guy-2.png", "purple-guy-3.png", "purple-guy-2.png", "purple-guy-1.png", "purple-guy-2.png", "purple-guy-3.png", "purple-guy-2.png", "purple-guy-1.png"];
+let sweaterGuyImg = new Image();
+let sweaterGuy = ["sweater-guy-1.png", "sweater-guy-2.png", "sweater-guy-1.png", "sweater-guy-2.png", "sweater-guy-1.png", "sweater-guy-2.png", "sweater-guy-1.png", "sweater-guy-2.png", "sweater-guy-1.png"];
+let womanImg = new Image();
+let woman = ["woman-1.png", "woman-2.png", "woman-3.png", "woman-2.png", "woman-1.png", "woman-2.png", "woman-3.png", "woman-2.png", "woman-1.png"];
+let frameCounter = 0;
+let frame = 0;
+let frameDelta = 1;
+let boatBobHeight = 2;
+let bobHeightArr = [2, 4, 6, 4, 2, 4, 6, 4, 2];
+let boatDistanceFromCenter = distanceFromCenter + (((100 + distanceFromCenter) /200) * 20);
+let leftPressed = false;
+let rightPressed = false;
+
+function keyDownHandler(e)
+{
+	if(e.keyCode == 37)
+	{
+		leftPressed = true;
+	}
+	else if(e.keyCode == 39)
+	{
+		rightPressed = true;
+	}
+}
+
+function keyUpHandler(e)
+{
+	if(e.keyCode == 37)
+	{
+		leftPressed = false;
+	}
+	else if(e.keyCode == 39)
+	{
+		rightPressed = false;
+	}
+}
+
+function controls ()
+{
+	if(leftPressed)
+	{
+		if(distanceFromCenter - 1 > -127)
+		{
+			distanceFromCenter--;
+		}
+	}
+	if(rightPressed)
+	{
+		if(distanceFromCenter + 1 < 128)
+		{
+			distanceFromCenter++;
+		}
+	}
+}
+
+function drawEnvironment ()
+{
+	ctx.drawImage(water, (184 + distanceFromCenter), 0, 392, 196, 0, 0, 392, 196);
+	ctx.drawImage(ship, (130 + boatDistanceFromCenter), 5 + boatBobHeight, 392, 183, 0, 0, 392, 200);
+	ctx.drawImage(ground, (260 + distanceFromCenter), 0, 392, 72, 0, 176, 392, 72);
+	if(frameCounter % 20 == 0)
+	{
+		frame += frameDelta;
+		if(frame == 8 || frame == 0)
+		{
+			frameDelta *= -1;
+		}
+	}
+
+	flagImg.src = flag[frame];
+	ctx.drawImage(flagImg, 376 - distanceFromCenter, 20);
+	boatBobHeight = bobHeightArr[frame];
+	womanImg.src = woman[frame];
+	ctx.drawImage(womanImg, 61 - boatDistanceFromCenter, 96 - boatBobHeight, 34, 61);
+	coatGuyImg.src = coatGuy[frame];
+	ctx.drawImage(coatGuyImg, 158 - boatDistanceFromCenter, 88 - boatBobHeight, 48, 62);
+	coolGuyImg.src = coolGuy[frame];
+	ctx.drawImage(coolGuyImg, -42 - boatDistanceFromCenter, 9 - boatBobHeight, 40, 44);
+	purpleGuyImg.src = purpleGuy[frame];
+	ctx.drawImage(purpleGuyImg, 0 - boatDistanceFromCenter, 14 - boatBobHeight, 48, 32);
+	sweaterGuyImg.src = sweaterGuy[frame];
+	ctx.drawImage(sweaterGuyImg, 94 - boatDistanceFromCenter, 96 - boatBobHeight, 32, 61);
+
+
+	frameCounter++;
+}
+
+function gameLoop()
+{
+	boatDistanceFromCenter = distanceFromCenter + (((100 + distanceFromCenter) /200) * 20);
+	drawEnvironment();
+	controls();
+}
+
+setInterval(gameLoop, 10);
+
+</script>
+</body>
+</html>
