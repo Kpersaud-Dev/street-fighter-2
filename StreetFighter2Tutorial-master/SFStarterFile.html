@@ -42,6 +42,26 @@ let bobHeightArr = [2, 4, 6, 4, 2, 4, 6, 4, 2];
 let boatDistanceFromCenter = distanceFromCenter + (((100 + distanceFromCenter) /200) * 20);
 let leftPressed = false;
 let rightPressed = false;
+let player1State = {state: "idle", frames: 4, autorepeat: true, nextState: "idle"};
+let player1Img = new Image();
+player1Img.src = "ken-copy.png";
+//Animations
+let kenIdle = [{x: 0, y: 0, w: 50, h: 100}, {x: 50, y: 0, w: 50, h: 100}, {x: 100, y: 0, w: 50, h: 100}, {x: 150, y: 0, w: 50, h: 100} ];
+let kenWalking = [{x: 202, y: 0, w: 50, h: 100}, {x: 251, y: 0, w: 50, h: 100}, {x: 301, y: 0, w: 50, h: 100}, {x: 351, y: 0, w: 50, h: 100}, {x: 400, y: 0, w: 48, h: 100} ];
+let kenLowMedP = [{x: 0, y: 116, w: 50, h: 100}, {x: 50, y: 116, w: 65, h: 100}, {x: 116, y: 116, w: 50, h: 100}];
+let kenHP = [{x: 167, y: 116, w: 50, h: 100}, {x: 217, y: 116, w: 56, h: 100}, {x: 273, y: 116, w: 77, h: 100}, {x: 350, y: 116, w: 60, h: 100}, {x: 410, y: 116, w: 50, h: 100}];
+let kenLowMedK = [{x: 0, y: 246, w: 54, h: 100}, {x: 56, y: 246, w: 73, h: 100}, {x: 129, y: 246, w: 58, h: 100}];
+let kenHK = [{x: 190, y: 246, w: 50, h: 100}, {x: 240, y: 246, w: 61, h: 100}, {x: 302, y: 246, w: 74, h: 100}, {x: 376, y: 246, w: 67, h: 100}, {x: 443, y: 246, w: 51, h: 100}];
+let playerFrameCount = 0;
+let playerFrame = 0;
+let player1X = 150;
+let player1Y = 100;
+let lowP = false;
+let medP = false;
+let highP = false;
+let lowK = false;
+let medK = false;
+let highK = false;
 
 function keyDownHandler(e)
 {
@@ -52,6 +72,36 @@ function keyDownHandler(e)
 	else if(e.keyCode == 39)
 	{
 		rightPressed = true;
+	}
+
+	else if(e.keycode == 49)
+	{
+		lowP = true;
+	}
+
+	else if(e.keycode == 50)
+	{
+		medP = true;
+	}
+
+	else if(e.keycode == 51)
+	{
+		highP = true;
+	}
+
+	else if(e.keycode == 52)
+	{
+		lowK = true;
+	}
+
+	else if(e.keycode == 53)
+	{
+		medK = true;
+	}
+
+	else if(e.keycode == 54)
+	{
+		highK = true;
 	}
 }
 
@@ -65,6 +115,36 @@ function keyUpHandler(e)
 	{
 		rightPressed = false;
 	}
+
+	else if(e.keycode == 49)
+	{
+		lowP = false;
+	}
+
+	else if(e.keycode == 50)
+	{
+		medP = false;
+	}
+
+	else if(e.keycode == 51)
+	{
+		highP = false;
+	}
+
+	else if(e.keycode == 52)
+	{
+		lowK = false;
+	}
+
+	else if(e.keycode == 53)
+	{
+		medK = false;
+	}
+
+	else if(e.keycode == 54)
+	{
+		highK = false;
+	}
 }
 
 function controls ()
@@ -73,15 +153,82 @@ function controls ()
 	{
 		if(distanceFromCenter - 1 > -127)
 		{
-			distanceFromCenter--;
+				distanceFromCenter--;
+		}
+		if(player1X >= 40 && distanceFromCenter == -126)
+		{
+				player1X--;
+		}
+		if(player1State.state.localeCompare("idle") == 0)
+		{
+				player1State = {state: "walking", frames: 5, autorepeat: true, nextState: "idle"};
 		}
 	}
-	if(rightPressed)
+	else if(rightPressed)
 	{
 		if(distanceFromCenter + 1 < 128)
 		{
 			distanceFromCenter++;
 		}
+		if(player1X <= 300 && distanceFromCenter == 127)
+		{
+				player1X++;
+		}
+		if(player1State.state.localeCompare("idle") == 0)
+		{
+				player1State = {state: "walking", frames: 5, autorepeat: true, nextState: "idle"};
+		}
+	}
+
+	else if(lowK || medK)
+	{
+		lowK = false;
+		medK = false;
+
+		if(player1State.state.localeCompare("idle") == 0)
+		{
+				player1State = {state: "lowMedK", frames: 3, autorepeat: false, nextState: "idle"};
+				player1Frame = 0;
+		}
+	}
+	else if(highK)
+	{
+		highK = false;
+		if(player1State.state.localeCompare("idle") == 0)
+		{
+				player1State = {state: "highK", frames: 5, autorepeat: false, nextState: "idle"};
+				player1Frame = 0;
+		}
+	}
+	else if(lowP || medP)
+	{
+		lowP = false;
+		medP = false;
+		if(player1State.state.localeCompare("idle") == 0)
+		{
+				player1State = {state: "lowMedP", frames: 3, autorepeat: false, nextState: "idle"};
+				player1Frame = 0;
+		}
+	}
+	else if(highP)
+	{
+		highP = false;
+		if(player1State.state.localeCompare("idle") == 0)
+		{
+				player1State = {state: "highP", frames: 5, autorepeat: false, nextState: "idle"};
+				player1Frame = 0;
+		}
+	}
+	else if(!rightPressed && !leftPressed && !player1State.state.localeCompare("lowMedP") == 0 &&
+					!player1State.state.localeCompare("highP") == 0 &&
+					!player1State.state.localeCompare("lowMedK") == 0 &&
+					!player1State.state.localeCompare("highK") == 0)
+	{
+			player1State = {state: "idle", frames: 4, autorepeat: true, nextState: "idle"};
+			if(playerFrame >= player1State.frames)
+			{
+					playerFrame = 0;
+			}
 	}
 }
 
@@ -117,11 +264,62 @@ function drawEnvironment ()
 	frameCounter++;
 }
 
+function drawCharacter1()
+{
+	switch(player1State.state)
+	{
+		case "walking":
+			ctx.drawImage(player1Img, kenWalking[playerFrame].x, kenWalking[playerFrame].y, kenWalking[playerFrame].w, kenWalking[playerFrame].h,
+			player1X, player1Y, kenWalking[playerFrame].w, kenWalking[playerFrame].h);
+			break;
+		case "lowMedK":
+			ctx.drawImage(player1Img, kenLowMedK[playerFrame].x, kenLowMedK[playerFrame].y, kenLowMedK[playerFrame].w, kenLowMedK[playerFrame].h,
+			player1X, player1Y, kenLowMedK[playerFrame].w, kenLowMedK[playerFrame].h);
+			break;
+		case "highK":
+			ctx.drawImage(player1Img, kenHK[playerFrame].x, kenHK[playerFrame].y, kenHK[playerFrame].w, kenHK[playerFrame].h,
+			player1X, player1Y, kenHK[playerFrame].w, kenHK[playerFrame].h);
+			break;
+		case "lowMedP":
+				ctx.drawImage(player1Img, kenLowMedP[playerFrame].x, kenLowMedP[playerFrame].y, kenLowMedP[playerFrame].w, kenLowMedP[playerFrame].h,
+				player1X, player1Y, kenLowMedP[playerFrame].w, kenLowMedP[playerFrame].h);
+				break;
+		case "highP":
+				ctx.drawImage(player1Img, kenHP[playerFrame].x, kenHP[playerFrame].y, kenHP[playerFrame].w, kenHP[playerFrame].h,
+				player1X, player1Y, kenHP[playerFrame].w, kenHP[playerFrame].h);
+				break;
+		default:
+			ctx.drawImage(player1Img, kenIdle[playerFrame].x, kenIdle[playerFrame].y, kenIdle[playerFrame].w, kenIdle[playerFrame].h,
+			player1X, player1Y, kenIdle[playerFrame].w, kenIdle[playerFrame].h);
+			break;
+	}
+	playerFrameCount++;
+	if(playerFrameCount % 10 == 0)
+	{
+		playerFrame++;
+	}
+	if(playerFrame > player1State.frames && player1State.autoRepeat)
+	{
+		playerFrameCount = 0;
+		playerFrame = 0;
+	}
+	else if(playerFrame >= player1State.frames && !player1State.autoRepeat)
+	{
+		playerFrameCount = 0;
+		playerFrame = 0;
+		if(player1State.nextState.localeCompare("idle") == 0)
+		{
+			player1State = {state: "idle", frames: 4, autorepeat: true, nextState: "idle"};
+		}
+	}
+}
+
 function gameLoop()
 {
 	boatDistanceFromCenter = distanceFromCenter + (((100 + distanceFromCenter) /200) * 20);
 	drawEnvironment();
 	controls();
+	drawCharacter1();
 }
 
 setInterval(gameLoop, 10);
